@@ -45,9 +45,23 @@ class Ax2d:
         d1 = abs(xy1.cross(self._dir._coord))
         xy2 = other._loc._coord - self._loc._coord
         d2 = abs(xy2.cross(other._dir._coord))
+        return (
+            self._dir.is_parallel_to(other._dir) and d1 < TOLERANCE and d2 < TOLERANCE
+        )
 
-        print(d1, d2)
+    def is_normal_to(self, other: Ax2d):
+        return self._dir.is_normal_to(other._dir)
 
-        return self._dir.is_parallel_to(other._dir) and d1 < TOLERANCE and d2 < TOLERANCE
+    def is_opposite_to(self, other: Ax2d):
+        return self._dir.is_opposite_to(other._dir)
 
-        
+    def is_parallel_to(self, other: Ax2d):
+        return self._dir.is_parallel_to(other._dir)
+
+    def to_tuple(self) -> tuple[float, float, float, float]:
+        return (
+            self._loc.x,
+            self._loc.y,
+            self._dir.x,
+            self._dir.y,
+        )
