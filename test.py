@@ -1,4 +1,5 @@
 from src.primitive import *
+from src.math import *
 
 # trsf = Trsf2D()
 # trsf.set_rotation(Point2D(0.0, 0.0), 90/180*3.1415926)
@@ -17,7 +18,15 @@ from src.primitive import *
 
 # print(point)
 
-ax2d_1 = Ax2d(Point2D(10, 11), Dir2d(0, 1))
-ax2d_2 = Ax2d(Point2D(10, 5), Dir2d(0, 1))
+### Ax2d coaxial test
 
-print(ax2d_1.is_coaxial_to(ax2d_2))
+# ax2d_1 = Ax2d(Point2D(10, 11), Dir2d(0, 1))
+# ax2d_2 = Ax2d(Point2D(10, 5), Dir2d(0, 1))
+
+# print(ax2d_1.is_coaxial_to(ax2d_2))
+
+###
+
+vec1 = MathVector.range(0, 3)
+vec1.reverse()
+print(vec1[1:2])
