@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 from ..primitive import Xy, Xyz
 
@@ -64,3 +66,89 @@ class MathVector:
 
     def __setitem__(self, key, value):
         self._data[key] = value
+
+    def __add__(self, other: MathVector | int | float):
+        if isinstance(other, MathVector):
+            return MathVector(self._data + other._data)
+        else:
+            return MathVector(self._data + other)
+
+    def __radd__(self, other: int | float):
+        return self.__add__(other)
+
+    def __iadd__(self, other: MathVector | int | float):
+        if isinstance(other, MathVector):
+            self._data += other._data
+        else:
+            self._data += other
+        return self
+
+    def __sub__(self, other: MathVector | int | float):
+        if isinstance(other, MathVector):
+            return MathVector(self._data - other._data)
+        else:
+            return MathVector(self._data - other)
+
+    def __rsub__(self, other: int | float):
+        if isinstance(other, MathVector):
+            return MathVector(other._data - self._data)
+        else:
+            return MathVector(other - self._data)
+
+    def __isub__(self, other: MathVector | int | float):
+        if isinstance(other, MathVector):
+            self._data -= other._data
+        else:
+            self._data -= other
+        return self
+
+    def __mul__(self, other: MathVector | int | float):
+        if isinstance(other, MathVector):
+            return MathVector(self._data * other._data)
+        else:
+            return MathVector(self._data * other)
+
+    def __rmul__(self, other: int | float):
+        return self.__mul__(other)
+
+    def __imul__(self, other: MathVector | int | float):
+        if isinstance(other, MathVector):
+            self._data *= other._data
+        else:
+            self._data *= other
+        return self
+
+    def __truediv__(self, other: MathVector | int | float):
+        if isinstance(other, MathVector):
+            return MathVector(self._data / other._data)
+        else:
+            return MathVector(self._data / other)
+
+    def __rtruediv__(self, other: int | float):
+        if isinstance(other, MathVector):
+            return MathVector(other._data / self._data)
+        else:
+            return MathVector(other / self._data)
+
+    def __itruediv__(self, other: MathVector | int | float):
+        if isinstance(other, MathVector):
+            self._data /= other._data
+        else:
+            self._data /= other
+        return self
+
+    def __neg__(self):
+        return MathVector(-self._data)
+
+    def __matmul__(self, other: MathVector):
+        if not isinstance(other, MathVector):
+            raise TypeError("Operand must be a MathVector")
+        return self._data.dot(other._data)
+
+    def to_matrix(self, row=None, col=1):
+        from ._MathMatrix import MathMatrix
+        if row is None:
+            row = len(self._data)
+        mat = np.array(self._data).reshape((row, col))
+        
+        return MathMatrix(mat)

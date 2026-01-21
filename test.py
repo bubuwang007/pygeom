@@ -27,6 +27,8 @@ from src.math import *
 
 ###
 
-vec1 = MathVector.range(0, 3)
-vec1.reverse()
-print(vec1[1:2])
+mat1 = MathMatrix([[5, 0, 0], [0, 1, 0], [0, 0, 1]])
+mat2 = MathMatrix([[5], [1], [1]])
+v1 = MathVector([1, 2, 3])
+v2 = MathVector([4, 5, 6])
+print(mat1 @ v1.to_matrix())
