@@ -27,8 +27,6 @@ from src.math import *
 
 ###
 
-mat1 = MathMatrix([[5, 0, 0], [0, 1, 0], [0, 0, 1]])
-mat2 = MathMatrix([[5], [1], [1]])
-v1 = MathVector([1, 2, 3])
-v2 = MathVector([4, 5, 6])
-print(mat1 @ v1.to_matrix())
+j = Jocobi(MathMatrix([[5, 1, 0], [1, 3, 0], [0, 0, 4]]))
+print(j.eigen_values)
+print(j.eigen_vectors)
