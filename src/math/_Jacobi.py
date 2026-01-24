@@ -14,7 +14,9 @@ class Jocobi:
     def __init__(self, matrix: MathMatrix) -> None:
         if not matrix.is_square:
             raise ValueError("Input matrix must be square")
-        self._matrix = matrix
+        if not matrix.is_symmetric:
+            raise ValueError("Input matrix must be symmetric")
+        self._matrix = matrix.copy()
         self._done = False
         self._nb_rotations = 0
         self._eigen_values = MathVector.zeros(matrix.shape[0])

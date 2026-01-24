@@ -1,5 +1,13 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ._Vec2d import Vec2d
+    from ._Ax2d import Ax2d
+    from ._Trsf2D import Trsf2D
+
+from ..config import FLOAT_PRINT_PRECISION
 from ._Xy import Xy
 
 
@@ -10,7 +18,7 @@ class Point2D:
         self._coord = Xy(x, y)
 
     def __str__(self) -> str:
-        return f"Point2D(x={self._coord.x}, y={self._coord.y})"
+        return f"Point2D(x={self._coord.x:.{FLOAT_PRINT_PRECISION}f}, y={self._coord.y:.{FLOAT_PRINT_PRECISION}f})"
 
     @property
     def coord(self) -> Xy:
@@ -63,8 +71,13 @@ class Point2D:
         self._coord += point._coord * 2
         return self
 
-    def mirror_by_ax2d(self):
-        raise NotImplementedError("mirror_by_ax2d method is not implemented yet.")
+    def mirror_by_ax2d(self, ax2d: Ax2d) -> Point2D:
+        from ._Trsf2D import Trsf2D
+
+        trsf = Trsf2D()
+        trsf.set_ax2d_mirror(ax2d)
+        trsf.transforms(self._coord)
+        return self
 
     def scale(self, point: Point2D, factor: float) -> Point2D:
         coord = point._coord.copy()
@@ -74,9 +87,14 @@ class Point2D:
         return self
 
     def rotate(self, point: Point2D, angle: float) -> Point2D:
-        raise NotImplementedError("rotate method is not implemented yet.")
+        from ._Trsf2D import Trsf2D
 
-    def transform(self, trsf2d):
+        trsf = Trsf2D()
+        trsf.set_rotation(point, angle)
+        trsf.transforms(self._coord)
+        return self
+
+    def transform(self, trsf2d: Trsf2D):
         from ._TrsfForm import TrsfForm
 
         if trsf2d.trsf_form == TrsfForm.IDENTITY:
@@ -91,9 +109,13 @@ class Point2D:
             self._coord += trsf2d.loc
         else:
             trsf2d.transforms(self._coord)
+        return self
 
-    def translate_by_vec(self):
-        raise NotImplementedError("translate_by_vec method is not implemented yet.")
+    def translate_by_vec(self, vec: Vec2d):
+        self._coord += vec.coord
+        return self
 
-    def translate_by_2point(self):
-        raise NotImplementedError("translate_by_2point method is not implemented yet.")
+    def translate_by_2points(self, p1: Point2D, p2: Point2D):
+        self._coord += p2._coord
+        self._coord -= p1._coord
+        return self

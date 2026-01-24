@@ -1,6 +1,7 @@
 from __future__ import annotations
 import math
-from ..config import TOLERANCE
+
+from ..config import TOLERANCE, FLOAT_PRINT_PRECISION
 
 
 class Xy:
@@ -8,11 +9,11 @@ class Xy:
     _y: float
 
     def __init__(self, x: float = 0.0, y: float = 0.0) -> None:
-        self._x = x
-        self._y = y
+        self._x = float(x)
+        self._y = float(y)
 
     def __str__(self) -> str:
-        return f"Xy(x={self._x}, y={self._y})"
+        return f"Xy(x={self._x:.{FLOAT_PRINT_PRECISION}f}, y={self._y:.{FLOAT_PRINT_PRECISION}f})"
 
     def __getitem__(self, index: int) -> float:
         if index == 0:
@@ -139,11 +140,20 @@ class Xy:
 
     def __rmatmul__(self, other) -> float:
         from ._Matrix2D import Matrix2D
+
         if isinstance(other, Matrix2D):
             return Xy(*(other.data @ self.to_tuple()))
 
     def cross(self, other: Xy) -> float:
         return self._x * other._y - self._y * other._x
+
+    def normalize(self) -> None:
+        modulus = self.modulus
+        if modulus > TOLERANCE:
+            self._x /= modulus
+            self._y /= modulus
+        else:
+            raise ValueError("Cannot normalize a zero-length vector")
 
     def __xor__(self, other: Xy) -> float:
         return self.cross(other)

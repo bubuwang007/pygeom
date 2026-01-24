@@ -1,5 +1,6 @@
 from __future__ import annotations
 import numpy as np
+from ._MathVector import MathVector
 
 
 class MathMatrix:
@@ -42,6 +43,10 @@ class MathMatrix:
     @property
     def is_square(self):
         return self._data.shape[0] == self._data.shape[1]
+
+    @property
+    def is_symmetric(self):
+        return np.allclose(self._data, self._data.T)
 
     def transpose(self):
         self._data = self._data.T
@@ -126,3 +131,18 @@ class MathMatrix:
 
     def to_list(self):
         return self._data.tolist()
+
+    def eig(self, sort: bool = False, reverse=False) -> tuple[MathVector, MathMatrix]:
+        if sort:
+            values, vectors = np.linalg.eig(self._data)
+            if reverse:
+                idx = values.argsort()[::-1]
+                values = values[idx]
+                vectors = vectors[:, idx]
+            else:
+                idx = values.argsort()
+                values = values[idx]
+                vectors = vectors[:, idx]
+        else:
+            values, vectors = np.linalg.eig(self._data)
+        return MathVector(values), MathMatrix(vectors)

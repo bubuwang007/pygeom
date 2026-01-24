@@ -2,8 +2,14 @@ from __future__ import annotations
 
 import sys
 import math
+from typing import TYPE_CHECKING
 
+from ..config import FLOAT_PRINT_PRECISION
 from ._Xy import Xy
+
+if TYPE_CHECKING:
+    from ._Ax2d import Ax2d
+    from ._Trsf2D import Trsf2D
 
 
 class Dir2d:
@@ -20,7 +26,7 @@ class Dir2d:
         self._coord /= mod
 
     def __str__(self) -> str:
-        return f"Dir2d(x={self._coord.x}, y={self._coord.y})"
+        return f"Dir2d(x={self._coord.x:.{FLOAT_PRINT_PRECISION}f}, y={self._coord.y:.{FLOAT_PRINT_PRECISION}f})"
 
     @property
     def coord(self) -> Xy:
@@ -78,7 +84,7 @@ class Dir2d:
         cross_product = self._coord.x * other._coord.y - self._coord.y * other._coord.x
         return abs(cross_product) < sys.float_info.epsilon
 
-    def angle_with(self, other: Dir2d) -> float:
+    def angle(self, other: Dir2d) -> float:
         """
         当角度大于 45° 时，使用 acos 计算角度能获得更好的精度；
         否则，最好使用 asin。
@@ -107,9 +113,10 @@ class Dir2d:
     def __matmul__(self, other: Dir2d) -> float:
         return self._coord @ other._coord
 
-    def reverse(self) -> None:
+    def reverse(self) -> Dir2d:
         self._coord.x = -self._coord.x
         self._coord.y = -self._coord.y
+        return self
 
     def mirror_by_dir2d(self, dir: Dir2d) -> Dir2d:
         coord = dir.coord
@@ -125,11 +132,39 @@ class Dir2d:
         self.normalize()
         return self
 
-    def mirror_by_ax2d(self):
-        raise NotImplementedError
+    def mirror_by_ax2d(self, ax2d: Ax2d):
+        xy = ax2d.dir.coord
+        a, b = xy.x, xy.y
+        x, y = self._coord.x, self._coord.y
+        m1 = 2 * a * b
+        xx = (2 * a * a - 1) * x + m1 * y
+        yy = m1 * x + (2 * b * b - 1) * y
+        self._coord = Xy(xx, yy)
+        return self
 
     def rotate(self, angle: float) -> Dir2d:
-        raise NotImplementedError
+        from ._Trsf2D import Trsf2D
+        from ._Point2D import Point2D
 
-    def transform(self):
-        raise NotImplementedError
+        trsf = Trsf2D()
+        trsf.set_rotation(Point2D(0, 0), angle)
+        self._coord = trsf.matrix @ self._coord
+
+        return self
+
+    def transform(self, trsf2d: Trsf2D):
+        from ._TrsfForm import TrsfForm
+
+        if trsf2d.trsf_form == TrsfForm.IDENTITY:
+            return
+        elif trsf2d.trsf_form == TrsfForm.PNTMIRROR:
+            self.reverse()
+        elif trsf2d.trsf_form == TrsfForm.SCALE:
+            if trsf2d.scale < 0:
+                self.reverse()
+        else:
+            self._coord = trsf2d.matrix @ self._coord
+            self.normalize()
+            if trsf2d.scale < 0:
+                self.reverse()
+        return self

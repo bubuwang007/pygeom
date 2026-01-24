@@ -1,8 +1,15 @@
 from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from ._Trsf2D import Trsf2D
+
+from ..config import FLOAT_PRINT_PRECISION
 from ._Xy import Xy
+from ._Point2D import Point2D
+from ._Ax2d import Ax2d
 from ..config import TOLERANCE
 
 
@@ -13,7 +20,7 @@ class Vec2d:
         self._coord = Xy(x, y)
 
     def __str__(self) -> str:
-        return f"Vec2d(x={self._coord.x}, y={self._coord.y})"
+        return f"Vec2d(x={self._coord.x:.{FLOAT_PRINT_PRECISION}f}, y={self._coord.y:.{FLOAT_PRINT_PRECISION}f})"
 
     @property
     def coord(self) -> Xy:
@@ -67,9 +74,10 @@ class Vec2d:
     def get_normal(self) -> Vec2d:
         return Vec2d(-self._coord.y, self._coord.x)
 
-    def reverse(self) -> None:
+    def reverse(self) -> Vec2d:
         self._coord.x = -self._coord.x
         self._coord.y = -self._coord.y
+        return self
 
     def is_opposite_to(self, other: Vec2d) -> bool:
         return (self._coord.x == -other._coord.x) and (self._coord.y == -other._coord.y)
@@ -78,14 +86,12 @@ class Vec2d:
         cross_product = self._coord.cross(other._coord)
         return abs(cross_product) < TOLERANCE
 
-    def normalize(self) -> None:
+    def normalize(self) -> Vec2d:
         mod = self.modulus()
         if mod < sys.float_info.epsilon:
             raise ValueError("Cannot normalize a zero-length vector")
         self._coord /= mod
-
-    def rotate(self, angle: float):
-        raise NotImplementedError("Rotation method not implemented yet.")
+        return self
 
     def cross(self, other: Vec2d) -> float:
         return self._coord.cross(other._coord)
@@ -139,17 +145,21 @@ class Vec2d:
 
     def a1_v1_a2_v2_v3(
         self, a1: float, v1: Vec2d, a2: float, v2: Vec2d, v3: Vec2d
-    ) -> None:
+    ) -> Vec2d:
         self._coord.a1_xy1_a2_xy2_xy3(a1, v1._coord, a2, v2._coord, v3._coord)
+        return self
 
-    def a1_v1_a2_v2(self, a1: float, v1: Vec2d, a2: float, v2: Vec2d) -> None:
+    def a1_v1_a2_v2(self, a1: float, v1: Vec2d, a2: float, v2: Vec2d) -> Vec2d:
         self._coord.a1_xy1_a2_xy2(a1, v1._coord, a2, v2._coord)
+        return self
 
-    def a1_v1_v2(self, a1: float, v1: Vec2d, v2: Vec2d) -> None:
+    def a1_v1_v2(self, a1: float, v1: Vec2d, v2: Vec2d) -> Vec2d:
         self._coord.a1_xy1_xy2(a1, v1._coord, v2._coord)
+        return self
 
-    def v1_v2(self, v1: Vec2d, v2: Vec2d) -> None:
+    def v1_v2(self, v1: Vec2d, v2: Vec2d) -> Vec2d:
         self._coord.xy1_xy2(v1._coord, v2._coord)
+        return self
 
     def mirror_by_vec2d(self, vec: Vec2d) -> Vec2d:
         m = vec.modulus
@@ -171,11 +181,38 @@ class Vec2d:
         self.y = ox * m1 + oy * yy
         return self
 
-    def mirror_by_ax2d(self):
-        raise NotImplementedError
+    def mirror_by_ax2d(self, ax2d: Ax2d):
+        xy = ax2d.dir.coord
+        ox, oy = self._coord.x, self._coord.y
+        dx, dy = xy.x, xy.y
+
+        crosss_term = 2 * dx * dy
+        xx = 2 * dx * dx - 1
+        yy = 2 * dy * dy - 1
+
+        self.x = ox * xx + oy * crosss_term
+        self.y = ox * crosss_term + oy * yy
+        return self
 
     def rotate(self, angle: float) -> Vec2d:
-        raise NotImplementedError
+        from ._Trsf2D import Trsf2D
 
-    def transform(self):
-        raise NotImplementedError
+        trsf = Trsf2D()
+        trsf.set_rotation(Point2D(0.0, 0.0), angle)
+        self._coord = trsf.matrix @ self._coord
+        return self
+
+    def transform(self, trsf2d: Trsf2D):
+        from ._TrsfForm import TrsfForm
+
+        if trsf2d.trsf_form == TrsfForm.IDENTITY:
+            return
+        elif trsf2d.trsf_form == TrsfForm.TRANSLATION:
+            return
+        elif trsf2d.trsf_form == TrsfForm.SCALE:
+            self._coord *= trsf2d.scale
+        elif trsf2d.trsf_form == TrsfForm.PNTMIRROR:
+            self.reverse()
+        else:
+            self._coord = trsf2d.matrix @ self._coord
+        return self

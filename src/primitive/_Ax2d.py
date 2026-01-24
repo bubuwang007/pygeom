@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ._Vec2d import Vec2d
+
 from ..config import TOLERANCE
 from ._Point2D import Point2D
 from ._Dir2d import Dir2d
@@ -65,3 +70,44 @@ class Ax2d:
             self._dir.x,
             self._dir.y,
         )
+
+    def angle(self, other: Ax2d) -> float:
+        return self._dir.angle(other._dir)
+
+    def reverse(self) -> Ax2d:
+        self._dir.reverse()
+        return self
+
+    def mirror_by_point(self, point: Point2D) -> Ax2d:
+        self._loc.mirror_by_point(point)
+        self._dir.reverse()
+        return self
+
+    def mirror_by_ax2d(self, ax2d: Ax2d) -> Ax2d:
+        self._loc.mirror_by_ax2d(ax2d)
+        self.dir.mirror_by_dir2d(ax2d.dir)
+        return self
+
+    def rotate(self, point: Point2D, angle: float) -> Ax2d:
+        self._loc.rotate(point, angle)
+        self._dir.rotate(angle)
+        return self
+
+    def scale(self, point: Point2D, factor: float) -> Ax2d:
+        self._loc.scale(point, factor)
+        if factor < 0.0:
+            self._dir.reverse()
+        return self
+
+    def transform(self, trsf2d) -> Ax2d:
+        self._loc.transform(trsf2d)
+        self._dir.transform(trsf2d)
+        return self
+
+    def translate_by_vec(self, vec2d: Vec2d) -> Ax2d:
+        self._loc.translate_by_vec(vec2d)
+        return self
+
+    def translate_by_2points(self, p1: Point2D, p2: Point2D) -> Ax2d:
+        self._loc.translate_by_2points(p1, p2)
+        return self
