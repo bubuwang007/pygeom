@@ -3,8 +3,12 @@ from ._Xy import Xy
 from ._Xyz import Xyz
 from ._Point2D import Point2D
 from ._Point3D import Point3D
-from ._Dir2d import Dir2d
-from ._Vec2d import Vec2d
+from ._Circ2D import Circ2D
+from ._Dir2D import Dir2D
+from ._Elips2D import Elips2D
+from ._Vec2D import Vec2D
 from ._Matrix2D import Matrix2D
-from ._Ax2d import Ax2d
+from ._Ax2D import Ax2D
+from ._Ax22D import Ax22D
 from ._Trsf2D import Trsf2D
+from ._GTrsf2D import GTrsf2D

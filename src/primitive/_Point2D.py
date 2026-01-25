@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ._Vec2d import Vec2d
-    from ._Ax2d import Ax2d
+    from ._Vec2D import Vec2D
+    from ._Ax2D import Ax2D
     from ._Trsf2D import Trsf2D
 
 from ..config import FLOAT_PRINT_PRECISION
@@ -71,7 +71,7 @@ class Point2D:
         self._coord += point._coord * 2
         return self
 
-    def mirror_by_ax2d(self, ax2d: Ax2d) -> Point2D:
+    def mirror_by_ax2d(self, ax2d: Ax2D) -> Point2D:
         from ._Trsf2D import Trsf2D
 
         trsf = Trsf2D()
@@ -111,7 +111,7 @@ class Point2D:
             trsf2d.transforms(self._coord)
         return self
 
-    def translate_by_vec(self, vec: Vec2d):
+    def translate_by_vec(self, vec: Vec2D):
         self._coord += vec.coord
         return self
 

@@ -8,11 +8,11 @@ from ..config import FLOAT_PRINT_PRECISION
 from ._Xy import Xy
 
 if TYPE_CHECKING:
-    from ._Ax2d import Ax2d
+    from ._Ax2D import Ax2D
     from ._Trsf2D import Trsf2D
 
 
-class Dir2d:
+class Dir2D:
     _coord: Xy
 
     def __init__(self, x: float = 1.0, y: float = 0.0) -> None:
@@ -26,7 +26,7 @@ class Dir2d:
         self._coord /= mod
 
     def __str__(self) -> str:
-        return f"Dir2d(x={self._coord.x:.{FLOAT_PRINT_PRECISION}f}, y={self._coord.y:.{FLOAT_PRINT_PRECISION}f})"
+        return f"Dir2D(x={self._coord.x:.{FLOAT_PRINT_PRECISION}f}, y={self._coord.y:.{FLOAT_PRINT_PRECISION}f})"
 
     @property
     def coord(self) -> Xy:
@@ -55,11 +55,11 @@ class Dir2d:
         self._coord.y = value
         self.normalize()
 
-    def copy(self) -> Dir2d:
-        return Dir2d(self._coord.x, self._coord.y)
+    def copy(self) -> Dir2D:
+        return Dir2D(self._coord.x, self._coord.y)
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Dir2d):
+        if not isinstance(other, Dir2D):
             return NotImplemented
         return self._coord == other._coord
 
@@ -73,18 +73,18 @@ class Dir2d:
     def to_tuple(self) -> tuple[float, float]:
         return (self._coord.x, self._coord.y)
 
-    def is_normal_to(self, other: Dir2d) -> bool:
+    def is_normal_to(self, other: Dir2D) -> bool:
         dot_product = self._coord.x * other._coord.x + self._coord.y * other._coord.y
         return abs(dot_product) < sys.float_info.epsilon
 
-    def is_opposite_to(self, other: Dir2d) -> bool:
+    def is_opposite_to(self, other: Dir2D) -> bool:
         return (self._coord.x == -other._coord.x) and (self._coord.y == -other._coord.y)
 
-    def is_parallel_to(self, other: Dir2d) -> bool:
+    def is_parallel_to(self, other: Dir2D) -> bool:
         cross_product = self._coord.x * other._coord.y - self._coord.y * other._coord.x
         return abs(cross_product) < sys.float_info.epsilon
 
-    def angle(self, other: Dir2d) -> float:
+    def angle(self, other: Dir2D) -> float:
         """
         当角度大于 45° 时，使用 acos 计算角度能获得更好的精度；
         否则，最好使用 asin。
@@ -107,18 +107,18 @@ class Dir2d:
                 else:
                     return -math.pi - math.asin(sin)
 
-    def cross(self, other: Dir2d) -> float:
+    def cross(self, other: Dir2D) -> float:
         return self._coord.cross(other._coord)
 
-    def __matmul__(self, other: Dir2d) -> float:
+    def __matmul__(self, other: Dir2D) -> float:
         return self._coord @ other._coord
 
-    def reverse(self) -> Dir2d:
+    def reverse(self) -> Dir2D:
         self._coord.x = -self._coord.x
         self._coord.y = -self._coord.y
         return self
 
-    def mirror_by_dir2d(self, dir: Dir2d) -> Dir2d:
+    def mirror_by_dir2d(self, dir: Dir2D) -> Dir2D:
         coord = dir.coord
         a = coord.x
         b = coord.y
@@ -132,7 +132,7 @@ class Dir2d:
         self.normalize()
         return self
 
-    def mirror_by_ax2d(self, ax2d: Ax2d):
+    def mirror_by_ax2d(self, ax2d: Ax2D):
         xy = ax2d.dir.coord
         a, b = xy.x, xy.y
         x, y = self._coord.x, self._coord.y
@@ -142,7 +142,7 @@ class Dir2d:
         self._coord = Xy(xx, yy)
         return self
 
-    def rotate(self, angle: float) -> Dir2d:
+    def rotate(self, angle: float) -> Dir2D:
         from ._Trsf2D import Trsf2D
         from ._Point2D import Point2D
 

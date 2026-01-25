@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import sys
-import numpy as np
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ._Ax2d import Ax2d
+    from ._Ax2D import Ax2D
     from ._Point2D import Point2D
-    from ._Vec2d import Vec2d
+    from ._Vec2D import Vec2D
 
 from ..config import FLOAT_PRINT_PRECISION
 from ._TrsfForm import TrsfForm
@@ -180,7 +179,7 @@ class Trsf2D:
         self._matrix.set_identity()
         self._loc = point.coord * 2
 
-    def set_ax2d_mirror(self, ax2d: Ax2d) -> None:
+    def set_ax2d_mirror(self, ax2d: Ax2D) -> None:
         self._trsf_form = TrsfForm.AX1MIRROR
         self._scale = -1.0
         v = ax2d.dir
@@ -212,7 +211,7 @@ class Trsf2D:
         self._loc = point.coord.copy()
         self._loc *= 1 - factor
 
-    def set_translation_by_vec(self, vec: Vec2d) -> None:
+    def set_translation_by_vec(self, vec: Vec2D) -> None:
         self._trsf_form = TrsfForm.TRANSLATION
         self._scale = 1.0
         self._matrix.set_identity()
@@ -224,7 +223,7 @@ class Trsf2D:
         self._matrix.set_identity()
         self._loc = p2.coord - p1.coord
 
-    def set_transformation_by_2ax2d(self, a1: Ax2d, a2: Ax2d):
+    def set_transformation_by_2ax2d(self, a1: Ax2D, a2: Ax2D):
         self._trsf_form = TrsfForm.COMPOUNDTRSF
         self.scale = 1.0
 
@@ -249,7 +248,7 @@ class Trsf2D:
         self.loc += mat1_loc
         self._matrix @= mat1
 
-    def set_transformation_by_ax2d(self, a: Ax2d):
+    def set_transformation_by_ax2d(self, a: Ax2D):
         self._trsf_form = TrsfForm.COMPOUNDTRSF
         self.scale = 1.0
         v1 = a.dir.coord
