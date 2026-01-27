@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 import sys
+import math
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ._Trsf2D import Trsf2D
 
-from ..config import FLOAT_PRINT_PRECISION
+from ..config import FLOAT_PRINT_PRECISION, TOLERANCE
 from ._Xy import Xy
 from ._Point2D import Point2D
 from ._Ax2D import Ax2D
-from ..config import TOLERANCE
 
 
 class Vec2D:
@@ -67,9 +67,13 @@ class Vec2D:
     def modulus(self) -> float:
         return self._coord.modulus
 
+    @property
+    def square_modulus(self) -> float:
+        return self._coord.square_modulus
+
     def is_normal_to(self, other: Vec2D) -> bool:
         dot_product = self._coord @ other._coord
-        return abs(dot_product) < 1e-9
+        return abs(dot_product) < TOLERANCE
 
     def get_normal(self) -> Vec2D:
         return Vec2D(-self._coord.y, self._coord.x)
@@ -79,8 +83,29 @@ class Vec2D:
         self._coord.y = -self._coord.y
         return self
 
+    def angle(self, other: Vec2D) -> float:
+        if (
+            self.modulus < sys.float_info.epsilon
+            or other.modulus < sys.float_info.epsilon
+        ):
+            raise ValueError("Cannot compute angle with zero-length vector")
+        d = self.modulus * other.modulus
+        cos = self._coord @ other._coord / d
+        sin = self.cross(other) / d
+
+        if cos > -0.7071067811865476 and cos < 0.7071067811865476:
+            return math.acos(cos) if sin > 0.0 else -math.acos(cos)
+        else:
+            if cos > 0.0:
+                return math.asin(sin)
+            else:
+                return (
+                    math.pi - math.asin(sin) if sin > 0.0 else -math.pi - math.asin(sin)
+                )
+
     def is_opposite_to(self, other: Vec2D) -> bool:
-        return (self._coord.x == -other._coord.x) and (self._coord.y == -other._coord.y)
+        angle = abs(self.angle(other))
+        return math.pi - angle < TOLERANCE
 
     def is_parallel_to(self, other: Vec2D) -> bool:
         cross_product = self._coord.cross(other._coord)
@@ -200,6 +225,10 @@ class Vec2D:
         trsf = Trsf2D()
         trsf.set_rotation(Point2D(0.0, 0.0), angle)
         self._coord = trsf.matrix @ self._coord
+        return self
+
+    def scale(self, factor: float) -> Vec2D:
+        self._coord *= factor
         return self
 
     def transform(self, trsf2d: Trsf2D):

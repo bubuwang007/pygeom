@@ -4,7 +4,7 @@ import sys
 import math
 from typing import TYPE_CHECKING
 
-from ..config import FLOAT_PRINT_PRECISION
+from ..config import FLOAT_PRINT_PRECISION, TOLERANCE
 from ._Xy import Xy
 
 if TYPE_CHECKING:
@@ -78,11 +78,12 @@ class Dir2D:
         return abs(dot_product) < sys.float_info.epsilon
 
     def is_opposite_to(self, other: Dir2D) -> bool:
-        return (self._coord.x == -other._coord.x) and (self._coord.y == -other._coord.y)
+        angle = abs(self.angle(other))
+        return math.pi - angle < TOLERANCE
 
     def is_parallel_to(self, other: Dir2D) -> bool:
         cross_product = self._coord.x * other._coord.y - self._coord.y * other._coord.x
-        return abs(cross_product) < sys.float_info.epsilon
+        return abs(cross_product) < TOLERANCE
 
     def angle(self, other: Dir2D) -> float:
         """

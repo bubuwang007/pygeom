@@ -180,6 +180,19 @@ class Matrix2D:
             return NotImplemented
         return self
 
+    def __pow__(self, power: int) -> Matrix2D:
+        return Matrix2D(np.linalg.matrix_power(self._data, power))
+
+    def __ipow__(self, power: int) -> Matrix2D:
+        self._data = np.linalg.matrix_power(self._data, power)
+        return self
+
     def transpose(self) -> Matrix2D:
         self._data = self._data.T
+        return self
+
+    def invert(self) -> Matrix2D:
+        if self.is_singular():
+            raise ValueError("Matrix is singular and cannot be inverted.")
+        self._data = np.linalg.inv(self._data)
         return self

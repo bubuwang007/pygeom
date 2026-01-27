@@ -63,14 +63,6 @@ class Ax2D:
     def is_parallel_to(self, other: Ax2D):
         return self._dir.is_parallel_to(other._dir)
 
-    def to_tuple(self) -> tuple[float, float, float, float]:
-        return (
-            self._loc.x,
-            self._loc.y,
-            self._dir.x,
-            self._dir.y,
-        )
-
     def angle(self, other: Ax2D) -> float:
         return self._dir.angle(other._dir)
 

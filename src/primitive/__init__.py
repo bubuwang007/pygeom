@@ -5,10 +5,16 @@ from ._Point2D import Point2D
 from ._Point3D import Point3D
 from ._Circ2D import Circ2D
 from ._Dir2D import Dir2D
+from ._Dir3D import Dir3D
 from ._Elips2D import Elips2D
 from ._Vec2D import Vec2D
+from ._Vec3D import Vec3D
+from ._Lin2d import Lin2D
 from ._Matrix2D import Matrix2D
+from ._Matrix3D import Matrix3D
 from ._Ax2D import Ax2D
+from ._Ax3D import Ax3D
 from ._Ax22D import Ax22D
 from ._Trsf2D import Trsf2D
+from ._Trsf3D import Trsf3D
 from ._GTrsf2D import GTrsf2D

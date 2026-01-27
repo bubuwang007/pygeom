@@ -1,6 +1,6 @@
 from __future__ import annotations
 import math
-from ..config import TOLERANCE
+from ..config import TOLERANCE, FLOAT_PRINT_PRECISION
 
 
 class Xyz:
@@ -14,7 +14,7 @@ class Xyz:
         self._z = z
 
     def __str__(self) -> str:
-        return f"Xyz(x={self._x}, y={self._y}, z={self._z})"
+        return f"Xyz(x={self._x:.{FLOAT_PRINT_PRECISION}f}, y={self._y:.{FLOAT_PRINT_PRECISION}f}, z={self._z:.{FLOAT_PRINT_PRECISION}f})"
 
     def __getitem__(self, index: int) -> float:
         if index == 0:
@@ -67,6 +67,25 @@ class Xyz:
     @property
     def square_modulus(self) -> float:
         return self._x**2 + self._y**2 + self._z**2
+
+    def normalize(self) -> Xyz:
+        mod = self.modulus
+        if mod > TOLERANCE:
+            self._x /= mod
+            self._y /= mod
+            self._z /= mod
+        else:
+            raise ValueError("Cannot normalize a zero vector")
+        return self
+
+    def cross_magnitude(self, other: Xyz) -> float:
+        return math.sqrt(self.square_cross_magnitude(other))
+
+    def square_cross_magnitude(self, other: Xyz) -> float:
+        cross_x = self._y * other._z - self._z * other._y
+        cross_y = self._z * other._x - self._x * other._z
+        cross_z = self._x * other._y - self._y * other._x
+        return cross_x**2 + cross_y**2 + cross_z**2
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Xyz):
@@ -168,8 +187,14 @@ class Xyz:
     def __matmul__(self, other: Xyz) -> float:
         return self._x * other._x + self._y * other._y + self._z * other._z
 
+    def __imatmul__(self, other: Xyz) -> float:
+        return self.__matmul__(other)
+
     def __rmatmul__(self, other) -> float:
-        raise NotImplementedError
+        from ._Matrix3D import Matrix3D
+
+        if isinstance(other, Matrix3D):
+            return Xyz(*(other.data @ self.to_tuple()))
 
     def cross(self, other: Xyz) -> Xyz:
         return Xyz(
@@ -180,6 +205,9 @@ class Xyz:
 
     def cross_cross(self, o1: Xyz, o2: Xyz) -> Xyz:
         return self.cross(o1.cross(o2))
+
+    def dot_cross(self, o1: Xyz, o2: Xyz) -> float:
+        return self @ (o1.cross(o2))
 
     def copy(self) -> Xyz:
         return Xyz(self._x, self._y, self._z)

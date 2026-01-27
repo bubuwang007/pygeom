@@ -138,6 +138,9 @@ class Xy:
     def __matmul__(self, other: Xy) -> float:
         return self._x * other._x + self._y * other._y
 
+    def __imatmul__(self, other: Xy) -> float:
+        return self.__matmul__(other)
+
     def __rmatmul__(self, other) -> float:
         from ._Matrix2D import Matrix2D
 

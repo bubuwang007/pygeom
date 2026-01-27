@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from ._Xyz import Xyz
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ._Trsf3D import Trsf3D
+
 
 class Point3D:
     _coord: Xyz
@@ -74,6 +79,9 @@ class Point3D:
 
     def mirror_by_ax3d(self):
         raise NotImplementedError
+    
+    def mirror_by_ax23d(self):
+        raise NotImplementedError
 
     def scale(self, point: Point3D, factor: float) -> Point3D:
         coord = point._coord.copy()
@@ -91,5 +99,5 @@ class Point3D:
     def translate_by_vec(self):
         raise NotImplementedError("translate_by_vec method is not implemented yet.")
 
-    def translate_by_2point(self):
+    def translate_by_2points(self):
         raise NotImplementedError("translate_by_2point method is not implemented yet.")

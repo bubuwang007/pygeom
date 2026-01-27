@@ -264,7 +264,6 @@ class Trsf2D:
         self._loc.reverse()
 
     def transforms(self, xy: Xy):
-        xy_tmp = xy.copy()
         xy_tmp = self._matrix @ xy_tmp
         if self._scale != 1.0:
             xy_tmp *= self._scale
