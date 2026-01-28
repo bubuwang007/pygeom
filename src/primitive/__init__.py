@@ -15,6 +15,8 @@ from ._Matrix3D import Matrix3D
 from ._Ax2D import Ax2D
 from ._Ax3D import Ax3D
 from ._Ax22D import Ax22D
+from ._RAx23D import RAx23D
+from ._RLAx23D import RLAx23D
 from ._Trsf2D import Trsf2D
 from ._Trsf3D import Trsf3D
 from ._GTrsf2D import GTrsf2D

@@ -14,7 +14,7 @@ class Circ2D:
     _radius: float
 
     def __init__(self, pos: Ax22D = Ax22D(), radius: float = 1.0) -> None:
-        self._pos = pos
+        self._pos = pos.copy()
         if radius <= 0.0:
             raise ValueError("Radius must be positive.")
         self._radius = radius
@@ -28,7 +28,7 @@ class Circ2D:
 
     @pos.setter
     def pos(self, value: Ax22D) -> None:
-        self._pos = value
+        self._pos = value.copy()
 
     @property
     def radius(self) -> float:
@@ -59,7 +59,7 @@ class Circ2D:
 
     @location.setter
     def location(self, point: Point2D) -> None:
-        self._pos.loc = point
+        self._pos.loc = point.copy()
 
     @property
     def xdir(self) -> Dir2D:
@@ -67,7 +67,7 @@ class Circ2D:
 
     @xdir.setter
     def xdir(self, dir: Dir2D) -> None:
-        self._pos.xdir = dir
+        self._pos.xdir = dir.copy()
 
     @property
     def ydir(self) -> Dir2D:
@@ -75,7 +75,7 @@ class Circ2D:
 
     @ydir.setter
     def ydir(self, dir: Dir2D) -> None:
-        self._pos.ydir = dir
+        self._pos.ydir = dir.copy()
 
     @property
     def area(self) -> float:

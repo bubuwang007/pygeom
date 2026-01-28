@@ -23,9 +23,9 @@ class Ax22D:
         xdir: Dir2D = Dir2D(1.0, 0.0),
         ydir: Dir2D = Dir2D(0.0, 1.0),
     ) -> None:
-        self._loc = loc
-        self._xdir = xdir
-        self._ydir = ydir
+        self._loc = loc.copy()
+        self._xdir = xdir.copy()
+        self._ydir = ydir.copy()
 
         v = self._xdir.cross(self._ydir)
         if v >= 0.0:
@@ -56,7 +56,7 @@ class Ax22D:
     @xdir.setter
     def xdir(self, value: Dir2D) -> None:
         is_sign = self._xdir.cross(value) >= 0.0
-        self._xdir = value
+        self._xdir = value.copy()
         if is_sign:
             self._ydir.x = -self._xdir.y
             self._ydir.y = self._xdir.x
@@ -71,8 +71,8 @@ class Ax22D:
     @xaxis.setter
     def xaxis(self, value: Ax2D) -> None:
         is_sign = self._xdir.cross(self._ydir) >= 0.0
-        self._loc = value.loc
-        self._xdir = value.dir
+        self._loc = value.loc.copy()
+        self._xdir = value.dir.copy()
         if is_sign:
             self.ydir.x, self.ydir.y = -value.dir.y, value.dir.x
         else:
@@ -85,7 +85,7 @@ class Ax22D:
     @ydir.setter
     def ydir(self, value: Dir2D) -> None:
         is_sign = self._xdir.cross(value) >= 0.0
-        self._ydir = value
+        self._ydir = value.copy()
         if is_sign:
             self._xdir.x = self._ydir.y
             self._xdir.y = -self._ydir.x
@@ -100,8 +100,8 @@ class Ax22D:
     @yaxis.setter
     def yaxis(self, value: Ax2D) -> None:
         is_sign = self._xdir.cross(self._ydir) >= 0.0
-        self._loc = value.loc
-        self._ydir = value.dir
+        self._loc = value.loc.copy()
+        self._ydir = value.dir.copy()
         if is_sign:
             self._xdir.x, self._xdir.y = value.dir.y, -value.dir.x
         else:

@@ -142,6 +142,9 @@ class Dir3D:
     def __matmul__(self, other: Dir3D) -> float:
         return self._coord @ other._coord
 
+    def __neg__(self) -> Dir3D:
+        return Dir3D(-self._coord.x, -self._coord.y, -self._coord.z)
+
     def reverse(self) -> Dir3D:
         self._coord.x = -self._coord.x
         self._coord.y = -self._coord.y

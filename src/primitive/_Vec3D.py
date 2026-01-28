@@ -22,6 +22,14 @@ class Vec3D:
     def __str__(self) -> str:
         return f"Vec3D(x={self._coord.x:.{FLOAT_PRINT_PRECISION}f}, y={self._coord.y:.{FLOAT_PRINT_PRECISION}f}, z={self._coord.z:.{FLOAT_PRINT_PRECISION}f})"
 
+    @staticmethod
+    def from_2points(p1: Point3D, p2: Point3D) -> Vec3D:
+        return Vec3D(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z)
+
+    @staticmethod
+    def from_dir(dir: Dir3D, length: float = 1.0) -> Vec3D:
+        return Vec3D(dir.x * length, dir.y * length, dir.z * length)
+
     @property
     def coord(self) -> Xyz:
         return self._coord

@@ -21,7 +21,7 @@ class Elips2D:
         major_radius: float = 2.0,
         minor_radius: float = 1.0,
     ) -> None:
-        self._pos = pos
+        self._pos = pos.copy()
         if major_radius <= 0.0 or minor_radius <= 0.0:
             raise ValueError("Radii must be positive.")
         self._major_radius = major_radius
@@ -33,7 +33,7 @@ class Elips2D:
 
     @pos.setter
     def pos(self, value: Ax22D) -> None:
-        self._pos = value
+        self._pos = value.copy()
 
     @property
     def major_radius(self) -> float:
@@ -67,7 +67,7 @@ class Elips2D:
 
     @location.setter
     def location(self, point: Point2D) -> None:
-        self._pos.loc = point
+        self._pos.loc = point.copy()
 
     @property
     def major_axis(self) -> Dir2D:
@@ -75,7 +75,7 @@ class Elips2D:
 
     @major_axis.setter
     def major_axis(self, direction: Dir2D) -> None:
-        self._pos._xdir = direction
+        self._pos._xdir = direction.copy()
 
     @property
     def minor_axis(self) -> Dir2D:
@@ -83,7 +83,7 @@ class Elips2D:
 
     @minor_axis.setter
     def minor_axis(self, direction: Dir2D) -> None:
-        self._pos._ydir = direction
+        self._pos._ydir = direction.copy()
 
     @property
     def area(self) -> float:

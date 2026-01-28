@@ -12,7 +12,7 @@ class Lin2D:
     _pos: Ax2D
 
     def __init__(self, pos: Ax2D = Ax2D()) -> None:
-        self._pos = pos
+        self._pos = pos.copy()
 
     @staticmethod
     def from_point_dir(point: Point2D, direction: Dir2D) -> Lin2D:

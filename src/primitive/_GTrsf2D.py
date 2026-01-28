@@ -28,8 +28,8 @@ class GTrsf2D:
     ) -> None:
         self._scale = scale
         self._trsf_form = trsf_form
-        self._matrix = matrix
-        self._loc = loc
+        self._matrix = matrix.copy()
+        self._loc = loc.copy()
 
     @staticmethod
     def from_trsf(trsf: Trsf2D) -> GTrsf2D:
