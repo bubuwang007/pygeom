@@ -80,7 +80,7 @@ class Point3D:
     def mirror_by_ax3d(self):
         raise NotImplementedError
     
-    def mirror_by_ax23d(self):
+    def mirror_by_rax23d(self):
         raise NotImplementedError
 
     def scale(self, point: Point3D, factor: float) -> Point3D:

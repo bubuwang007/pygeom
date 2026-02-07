@@ -5,7 +5,8 @@ import math
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    pass
+    from ._Vec3D import Vec3D
+    from ._Point3D import Point3D
 
 from ..config import FLOAT_PRINT_PRECISION, TOLERANCE
 from ._Xyz import Xyz
@@ -17,6 +18,14 @@ class Dir3D:
     def __init__(self, x: float = 1.0, y: float = 0.0, z: float = 0.0) -> None:
         self._coord = Xyz(x, y, z)
         self.normalize()
+
+    @staticmethod
+    def from_vec(vec: Vec3D) -> Dir3D:
+        return Dir3D(vec.x, vec.y, vec.z)
+
+    @staticmethod
+    def from_2points(p1: Point3D, p2: Point3D) -> Dir3D:
+        return Dir3D(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z)
 
     def normalize(self) -> None:
         mod = self._coord.modulus
@@ -161,7 +170,7 @@ class Dir3D:
     def mirror_by_ax3d(self):
         raise NotImplementedError
 
-    def mirror_by_ax23d(self):
+    def mirror_by_rax23d(self):
         raise NotImplementedError
 
     def transform(self):

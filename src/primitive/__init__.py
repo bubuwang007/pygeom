@@ -10,6 +10,7 @@ from ._Elips2D import Elips2D
 from ._Vec2D import Vec2D
 from ._Vec3D import Vec3D
 from ._Lin2d import Lin2D
+from ._Lin3D import Lin3D
 from ._Matrix2D import Matrix2D
 from ._Matrix3D import Matrix3D
 from ._Ax2D import Ax2D
@@ -20,3 +21,4 @@ from ._RLAx23D import RLAx23D
 from ._Trsf2D import Trsf2D
 from ._Trsf3D import Trsf3D
 from ._GTrsf2D import GTrsf2D
+from ._Quaternion import Quaternion

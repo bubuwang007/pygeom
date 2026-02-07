@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sys
 
+from ..config import TOLERANCE
 from ._Point2D import Point2D
 from ._Dir2D import Dir2D
 from ._Ax2D import Ax2D
@@ -47,7 +48,7 @@ class Lin2D:
         return self._pos.loc
 
     @loc.setter
-    def location(self, point: Point2D) -> None:
+    def loc(self, point: Point2D) -> None:
         self._pos.loc = point
 
     @property
@@ -70,6 +71,9 @@ class Lin2D:
 
     def angle(self, other: Lin2D) -> float:
         return self._pos.dir.angle(other.pos.dir)
+
+    def contains(self, point: Point2D) -> bool:
+        return self.distance_to_point(point) < TOLERANCE
 
     def distance_to_point(self, point: Point2D) -> float:
         xy = point.coord.copy()

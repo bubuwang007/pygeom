@@ -42,10 +42,14 @@ class Trsf3D:
     def scale(self) -> float:
         return self._scale
 
-    @scale.setter
-    def scale(self, value: float) -> None:
-        self._scale = value
-        # TODO
+    def set_scale(self, point: Point3D, factor: float) -> None:
+        if factor < sys.float_info.epsilon:
+            raise ValueError("Scale factor must be greater than zero.")
+        self._trsf_form = TrsfForm.SCALE
+        self._scale = factor
+        self._loc = point.coord.copy()
+        self._matrix.set_identity()
+        self._loc *= 1 - factor
 
     @property
     def trsf_form(self) -> TrsfForm:

@@ -178,7 +178,7 @@ class RLAx23D:
     def angle(self, other: RLAx23D) -> float:
         return self._axis.angle(other._axis)
 
-    def is_coplanar_to_ax23d(self, other: RLAx23D) -> bool:
+    def is_coplanar_to_rlax23d(self, other: RLAx23D) -> bool:
         vec = Vec3D.from_2points(self._axis.loc, other._axis.loc)
         d1 = abs(Vec3D.from_dir(self._axis.dir) @ vec)
         d2 = abs(Vec3D.from_dir(other._axis.dir) @ vec)

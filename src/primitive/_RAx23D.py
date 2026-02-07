@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import sys
 from typing import TYPE_CHECKING
-
 
 if TYPE_CHECKING:
     from ._Ax3D import Ax3D
@@ -73,7 +71,7 @@ class RAx23D:
     @property
     def axis(self) -> Ax3D:
         return self._axis
-    
+
     @axis.setter
     def axis(self, ax: Ax3D) -> None:
         a = ax._dir * self._xdir
@@ -83,4 +81,136 @@ class RAx23D:
                 self._ydir = self._axis.dir
                 self._axis = ax.copy()
             else:
-                self._xdir = self._
+                self._xdir = self._axis._dir
+                self._axis = ax.copy()
+        else:
+            self._axis = ax.copy()
+            self._xdir = self._axis._dir.cross_cross(self._xdir, self._axis._dir)
+            self._ydir = self._axis._dir.cross(self._xdir)
+
+    @property
+    def dir(self) -> Dir3D:
+        return self._axis.dir
+
+    @dir.setter
+    def dir(self, ndir: Dir3D) -> None:
+        a = ndir * self._xdir
+        if abs(abs(a) - 1.0) < TOLERANCE:
+            if a > 0.0:
+                self._xdir = self._ydir
+                self._ydir = self._axis.dir
+                self._axis._dir = ndir.copy()
+            else:
+                self._xdir = self._axis._dir
+                self._axis._dir = ndir.copy()
+        else:
+            self._axis._dir = ndir.copy()
+            self._xdir = ndir.cross_cross(self._xdir, ndir)
+            self._ydir = ndir.cross(self._xdir)
+
+    @property
+    def loc(self) -> Point3D:
+        return self._axis.loc
+
+    @loc.setter
+    def loc(self, value: Point3D) -> None:
+        self._axis.loc = value
+
+    @property
+    def xdir(self) -> Dir3D:
+        return self._xdir
+
+    @xdir.setter
+    def xdir(self, dir: Dir3D) -> None:
+        self._xdir = self._axis._dir.cross_cross(dir, self._axis._dir)
+        self._ydir = self._axis._dir.cross(self._xdir)
+
+    @property
+    def ydir(self) -> Dir3D:
+        return self._ydir
+
+    @ydir.setter
+    def ydir(self, dir: Dir3D) -> None:
+        self._ydir = dir.cross(self._axis._dir)
+        self._xdir = self._axis._dir.cross(self._xdir)
+
+    def angle(self, other: RAx23D) -> float:
+        return self._axis.angle(other)
+
+    def is_coplanar_to_rax23d(self, other: RAx23D) -> bool:
+        dd = self._axis._dir
+        pp = other._axis._loc
+        op = self._axis._loc
+        d1 = (dd.x * (op.x - pp.x)) + dd.y * (op.y - pp.y) + dd.z * (op.z - pp.z)
+        d1 = abs(d1)
+        return d1 < TOLERANCE and self._axis.is_parallel_to(other._axis)
+
+    def is_coplanar_to_ax3d(self, other: Ax3D) -> bool:
+        dd = self._axis._dir
+        pp = self._axis._loc
+        ap = other._loc
+        d1 = (dd.x * (ap.x - pp.x)) + dd.y * (ap.y - pp.y) + dd.z * (ap.z - pp.z)
+        d1 = abs(d1)
+
+        return d1 < TOLERANCE and self._axis.is_parallel_to(other)
+
+    def mirror_by_point(self, point: Point3D) -> RAx23D:
+        tmp = self.loc.copy()
+        self.mirror_by_point(point)
+        self._axis._loc = tmp
+        self._xdir.reverse()
+        self._ydir.reverse()
+        return self
+
+    def mirror_by_ax3d(self, ax3d: Ax3D) -> RAx23D:
+        self._ydir.mirror_by_ax3d(ax3d)
+        self._xdir.mirror_by_ax3d(ax3d)
+        tmp = self.loc.copy()
+        tmp.mirror_by_ax3d(ax3d)
+        self._axis._loc = tmp
+        self._axis._dir = self._xdir.cross(self._ydir)
+        return self
+
+    def mirror_by_rax23d(self, rax23d: RAx23D) -> RAx23D:
+        self._ydir.mirror_by_rax23d(rax23d)
+        self._xdir.mirror_by_rax23d(rax23d)
+        tmp = self.loc.copy()
+        tmp.mirror_by_rax23d(rax23d)
+        self._axis._loc = tmp
+        self._axis._dir = self._xdir.cross(self._ydir)
+        return self
+
+    def rotate(self, ax3d: Ax3D, angle: float) -> RAx23D:
+        tmp = self._axis._loc.copy()
+        tmp.rotate(ax3d, angle)
+        self._axis._loc = tmp
+        self._xdir.rotate(ax3d, angle)
+        self._ydir.rotate(ax3d, angle)
+        self._axis._dir = self._xdir.cross(self._ydir)
+        return self
+
+    def scale(self, point: Point3D, factor: float) -> RAx23D:
+        tmp = self._axis._loc.copy()
+        tmp.scale(point, factor)
+        self._axis._loc = tmp
+        if factor < 0.0:
+            self._xdir.reverse()
+            self._ydir.reverse()
+        return self
+
+    def transform(self, trsf3d: Trsf3D) -> RAx23D:
+        tmp = self._axis._loc.copy()
+        tmp.transform(trsf3d)
+        self._axis._loc = tmp
+        self._xdir.transform(trsf3d)
+        self._ydir.transform(trsf3d)
+        self._axis._dir = self._xdir.cross(self._ydir)
+        return self
+
+    def translate_by_vec(self, vec: Vec3D) -> RAx23D:
+        self._axis.translate_by_vec(vec)
+        return self
+
+    def translate_by_2points(self, p1: Point3D, p2: Point3D) -> RAx23D:
+        self._axis.translate_by_2points(p1, p2)
+        return self

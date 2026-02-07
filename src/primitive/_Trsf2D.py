@@ -205,6 +205,8 @@ class Trsf2D:
         self._loc += point.coord
 
     def set_scale(self, point: Point2D, factor: float) -> None:
+        if factor < sys.float_info.epsilon:
+            raise ValueError("Scale factor must be greater than zero.")
         self._trsf_form = TrsfForm.SCALE
         self._scale = factor
         self._matrix.set_identity()

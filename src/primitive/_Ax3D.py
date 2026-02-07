@@ -80,9 +80,9 @@ class Ax3D:
         self._dir.mirror_by_ax3d(a1)
         return self
 
-    def mirror_by_ax23d(self, a2: Ax3D) -> Ax3D:
-        self._loc.mirror_by_ax23d(a2)
-        self._dir.mirror_by_ax23d(a2)
+    def mirror_by_rax23d(self, a2: Ax3D) -> Ax3D:
+        self._loc.mirror_by_rax23d(a2)
+        self._dir.mirror_by_rax23d(a2)
         return self
 
     def rotate(self, point: Point3D, angle: float) -> Ax3D:
