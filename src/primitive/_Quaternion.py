@@ -65,6 +65,7 @@ class Quaternion:
         if magn < sys.float_info.epsilon:
             self.stabilize_length()
             magn = self.norm
+        self.scale(1.0 / magn)
 
     def reverse(self):
         self._x = -self._x
@@ -99,6 +100,10 @@ class Quaternion:
     def set_rotation(self, vec_from: Vec3D, vec_to: Vec3D):
         vec_cross = vec_from.copy().cross(vec_to)
         self.set(vec_cross.x, vec_cross.y, vec_cross.z, vec_from @ vec_to)
+        self.normalize()
+
+    def set_rotation_with_ref(self):
+        pass
 
     def __neg__(self, q: Quaternion) -> Quaternion:
         return Quaternion(-q._x, -q._y, -q._z, -q._w)
